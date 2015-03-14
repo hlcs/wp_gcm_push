@@ -16,6 +16,7 @@ $wpdb = $GLOBALS['wpdb'];
 
 define('GCM_API_KEY', "");// Put your GCM APY KEY HERE. Obtain a key here https://console.developers.google.com "APIs & auth"->Credentials
 
+// Table name where Android GCM users are stored
 define('TABLE_NAME', $wpdb->prefix . 'gcm_users');
 
 // Security check
@@ -24,13 +25,25 @@ defined('ABSPATH') or die("No script kiddies please!");
 // Call our function at publish event
 add_action('publish_post', 'wp_gcm_push', 10, 2);
 
-// 
+/**
+ * Function called by action hook
+ * 
+ * @param type $ID ID of the post
+ * @param type $post Post object
+ */
 function wp_gcm_push($ID, $post) {
     $link = get_permalink($ID);
     $title = $post->post_title;
     push_gcm($link, $title);
 }
 
+/**
+ * Push notification to registered users
+ * 
+ * @global type $wpdb Global object for Wordpress database
+ * @param type $link Permalink of the post sent to Android for notification link
+ * @param type $title Title of the post sent to Android for notification text
+ */ 
 function push_gcm($link, $title) {
     global $wpdb;
     $table_name = TABLE_NAME;
@@ -81,6 +94,11 @@ function push_gcm($link, $title) {
 // Create data structure at installation
 register_activation_hook(__FILE__, 'wp_gcm_push_install');
 
+/**
+ * Function called at plugin activaction.
+ * It creates the GCM users table
+ *  
+ */
 function wp_gcm_push_install() {
     global $wpdb;
 
