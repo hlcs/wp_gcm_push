@@ -22,8 +22,10 @@ define('TABLE_NAME', $wpdb->prefix . 'gcm_users');
 // Security check
 defined('ABSPATH') or die("No script kiddies please!");
 
-// Call our function at publish event
-add_action('publish_post', 'wp_gcm_push', 10, 2);
+// Call our function when a post gets published the first time
+add_action('draft_to_publish', 'wp_gcm_push', 10, 2);
+add_action('auto-draft_to_publish', 'wp_gcm_push', 10, 2);
+add_action('pending_to_publish', 'wp_gcm_push', 10, 2);
 
 /**
  * Function called by action hook
